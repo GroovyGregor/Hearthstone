@@ -31,6 +31,7 @@ Defines parameters and opens data
 data_file 		= parameters.data_file 		#file name
 factor			= parameters.factor			#factor for calculation of rating
 min_len			= parameters.min_len		#threshold --> minimum number of games for a matchup, to be considered for the rating calculation
+deck_par		= parameters.decks			#all of my decks
 
 ###data
 data 			= pd.read_csv(data_file)	#open data file
@@ -41,7 +42,7 @@ hero_rating		= {}						#will be filled with summed ratings against each enemy cl
 ###lists
 ranking			= []						#will be filled with decks in ranked order
 lengths			= []						#will be filled with lengths of data for each matchup (to find minimum)
-
+decks			= []						#will be filled with HS-objective for each of my decks
 
 
 
@@ -54,11 +55,9 @@ lengths			= []						#will be filled with lengths of data for each matchup (to fi
 Creates a Hearthstone_deck - objective for each Hearthstone deck.
 '''
 
-deck1 = HS_Deck('Lifecoach','Warrior','Dragon',1)
-deck2 = HS_Deck('ThijsNL','Warlock','Reno',1)
-deck3 = HS_Deck('ThijsNL','Priest','Dragon',1)
-deck4 = HS_Deck('Lifecoach','Shaman','Jade',1)
-deck5 = HS_Deck('ThijsNL','Warrior','Pirate',1)
+###create a HS-objective for each deck
+for deck in deck_par:
+	decks.append(HS_Deck(deck[0],deck[1],deck[2],deck[3]))
 
 
 
@@ -66,14 +65,13 @@ deck5 = HS_Deck('ThijsNL','Warrior','Pirate',1)
 
 
 ########################################################################
-### My decks and enemy classes ###
+### Enemy classes ###
 ########################################################################
 
 '''
-Define my decks and enemy classes.
+Define enemy classes.
 '''
 
-decks 			= [deck5,deck2,deck3,deck4]				#my decks
 enemy_classes 	= ['Warrior','Rogue','Priest','Shaman']	#classes of enemy
 
 

@@ -1,4 +1,4 @@
-###program to create a ranking of my Hearthstone decks
+###get rating of each deck
 
 
 
@@ -12,6 +12,7 @@
 import modules and functions
 '''
 
+import numpy as np
 import pandas as pd
 import parameters
 from HSModule.HSDeck import HS_Deck
@@ -34,8 +35,8 @@ data 		= pd.read_csv(data_file)	#open data file
 
 
 ###lists
-ranking		= []						#will be filled with decks in ranked order
 decks		= []						#will be filled with HS-objective for each deck
+ratings		= []						#contains rating of decks in same order as decks are saved in 'decks'-list
 
 ###parameter
 factor		= parameters.factor			#factor for calculation of rating
@@ -82,32 +83,16 @@ for deck in decks:
 ########################################################################
 
 '''
-Calculates a rating for each deck. The rating is depending on the number
-of games played with the deck. Thus, decks are only compared by 
-calculating a rating of the last 'x' games, with 'x' beeing the minimum
-number of games played with the decks. 
-The worst deck is then excluded, and the same calculation done again,
-with a new minimum number of games played, for the remaining decks.
-This is repeated until there is no deck left to exclude.
+Calculates a rating for each deck. 
 '''
 
-###calculate ranking for each deck with minimum number of games until there is no deck left
-while len(decks) > 0:
-	
-	###calculate the minimum games played by all decks.
-	min_len = min([len(deck.data) for deck in decks])
-	
-	###rating list, going to be filled with ratings of decks
-	rating_list = []
-	
-	###go through each deck and calculate the rating.
-	for deck in decks:
-		rating = deck.get_rating(deck.data,min_len,factor) 		#calculates rating of last 'min_len' games
-		rating_list.append(rating) 								#appends the deck rating to rating_list
-		
-	###update rating and ranking lists
-	ranking.append(decks[rating_list.index(min(rating_list))]) 	#append ranking list with the worst performing deck of remaining decks
-	del decks[rating_list.index(min(rating_list))]				#delete worst performing deck from deck-list, to compare remaining decks in next loop
+###get rating of all decks
+for deck in decks:
+	ratings.append(deck.get_rating(deck.data,len(deck.data),factor))
+
+###get indices of ratings, if sorted by max
+ratings = np.array(ratings)			#form to numpy array to be able to use argsort
+indices = np.argsort(ratings)[::-1]	#get indices of sorted rating array
 
 
 
@@ -121,8 +106,10 @@ while len(decks) > 0:
 creates output.
 '''
 
-print('Ranking in decreasing order:')
+print('Ranking of decks in decreasing order:')
 print()
 
-for deck in ranking[::-1]:
-	print(str(deck.version) + '. version of ' + deck.player +"'s " + deck.deck_type + '-' + deck.hero)
+###loop through sorted indices array
+for index in indices:
+	print('rating: ' + str(ratings[index]) + '            ' + str(decks[index].version) + '. version of ' + decks[index].player +"'s " + decks[index].deck_type + '-' + decks[index].hero)
+
