@@ -37,6 +37,7 @@ data 		= pd.read_csv(data_file)	#open data file
 ###lists
 decks		= []						#will be filled with HS-objective for each deck
 ratings		= []						#contains rating of decks in same order as decks are saved in 'decks'-list
+lengths		= []						#contains length of all deck specific data
 
 ###parameter
 factor		= parameters.factor			#factor for calculation of rating
@@ -89,7 +90,8 @@ Calculates a rating for each deck.
 ###get rating of all decks
 for deck in decks:
 	ratings.append(deck.get_rating(deck.data,len(deck.data),factor))
-
+	lengths.append(len(deck.data))
+	
 ###get indices of ratings, if sorted by max
 ratings = np.array(ratings)			#form to numpy array to be able to use argsort
 indices = np.argsort(ratings)[::-1]	#get indices of sorted rating array
@@ -111,5 +113,5 @@ print()
 
 ###loop through sorted indices array
 for index in indices:
-	print('rating: ' + str(ratings[index]) + '            ' + str(decks[index].version) + '. version of ' + decks[index].player +"'s " + decks[index].deck_type + '-' + decks[index].hero)
+	print('rating (games): ' + str(ratings[index]) + ' (' + str(lengths[index]) + ')' + '    ' + str(decks[index].version) + '. version of ' + decks[index].player +"'s " + decks[index].deck_type + '-' + decks[index].hero)
 
